@@ -52,10 +52,45 @@ streamlit run main.py
 
 Open `http://localhost:8501` in your browser.
 
+### 5-Minute Walkthrough
+
+#### 1. Download Data
+
+Open the **Binance** page (🌐 tab in sidebar), select a symbol (e.g. `BTCUSDT`) and interval (`4h`), click download. Data is saved to `data/raw/` as Parquet files.
+
+#### 2. Build a Rule
+
+Go to the **Rule Builder** (🔧 tab). Select a feature like `ema` → operator `>` → value `0` → click **Add Condition**. Add more conditions with AND/OR logic. Click **Save Rule** to store it as JSON.
+
+#### 3. Run a Scan
+
+Go to the **Scanner** (🔍 tab). Select your dataset, choose the rule you just built, pick SL/TP strategies (e.g. `ATRSL` + `FixedRRTP`), and click **Run Scan**.
+
+#### 4. Read Results
+
+You'll see:
+- **Summary cards**: total trades, win rate, profit factor, expectancy, max drawdown
+- **Equity curve**: cumulative R-multiple over time
+- **Return distribution**: histogram of all trade outcomes
+- **Trade table**: every individual trade with entry/exit/sl/tp prices
+- **Trade filter**: slice by indicator values to find optimal conditions
+
 ### CLI Pipeline
 
 ```bash
-python run_pipeline.py --csv data/raw/BTCUSDT_4h.parquet --symbol BTCUSDT --interval 4h
+# Quick test with sample data
+python run_pipeline.py
+
+# Test against real data with a saved rule
+python run_pipeline.py \
+  --csv data/raw/BTCUSDT_4h.parquet \
+  --symbol BTCUSDT --interval 4h \
+  --rule rules/macd_crossover.json \
+  --sl-type atr --sl 1.5 \
+  --tp-type rr --tp 2.0
+
+# JSON output for scripting
+python run_pipeline.py --csv data/raw/ETHUSDT_4h.parquet --json
 ```
 
 ## Architecture
