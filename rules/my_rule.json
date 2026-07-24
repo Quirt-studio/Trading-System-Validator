@@ -1,0 +1,18 @@
+{
+  "and": [
+    {
+      "feature": "bollinger",
+      "operator": ">=",
+      "value": 2.0,
+      "params": {
+        "period": 20,
+        "std_dev": 2.0
+      }
+    },
+    {
+      "feature": "close_from_high",
+      "operator": ">=",
+      "value": 2.0
+    }
+  ]
+}

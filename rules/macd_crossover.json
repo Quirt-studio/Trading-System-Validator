@@ -1,0 +1,15 @@
+{
+  "and": [
+    {
+      "feature": "macd",
+      "operator": "cross_above",
+      "value": 0,
+      "params": {"component": "histogram"}
+    },
+    {
+      "feature": "volume",
+      "operator": ">",
+      "value": 1.0
+    }
+  ]
+}

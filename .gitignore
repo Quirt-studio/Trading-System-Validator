@@ -1,0 +1,40 @@
+# FactorLab .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.Python
+
+# Virtual environment
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Data
+data/raw/*.parquet
+data/raw/*.csv
+data/*.db
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Plans
+.claude/plans/

@@ -1,0 +1,30 @@
+{
+  "and": [
+    {
+      "feature": "bollinger",
+      "operator": ">",
+      "value": 2.0,
+      "params": {"period": 20, "std_dev": 2.0}
+    },
+    {
+      "feature": "close_from_high",
+      "operator": "<",
+      "value": 1.0
+    },
+    {
+      "or": [
+        {
+          "feature": "macd",
+          "operator": ">",
+          "value": 0,
+          "params": {"component": "histogram"}
+        },
+        {
+          "feature": "volume",
+          "operator": ">",
+          "value": 1.5
+        }
+      ]
+    }
+  ]
+}
