@@ -27,6 +27,23 @@ It does NOT trade, connect to exchanges, or manage money. It replays historical 
 | 🌐 **Bilingual** | Chinese / English toggle — every label switches instantly |
 | 💾 **Local-First** | Parquet + SQLite, zero dependencies on cloud services |
 
+## Preview
+
+<p align="center">
+  <img src="docs/images/equity_curve.png" width="70%" alt="Equity Curve"><br>
+  <em>Equity Curve — cumulative R-multiple over all trades</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/return_distribution.png" width="70%" alt="Return Distribution"><br>
+  <em>Return Distribution — histogram of per-trade R-multiples</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/trade_results.png" width="45%" alt="Trade Results"><br>
+  <em>Trade outcome breakdown (TP vs SL)</em>
+</p>
+
 ## Quick Start
 
 ### Prerequisites
