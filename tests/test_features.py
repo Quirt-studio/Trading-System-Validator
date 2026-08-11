@@ -103,11 +103,11 @@ def test_bollinger_basic(sample_df, feature_registry) -> None:
 def test_bollinger_different_std(sample_df, feature_registry) -> None:
     r1 = feature_registry.calculate("bollinger", sample_df, period=20, std_dev=1.0)
     r2 = feature_registry.calculate("bollinger", sample_df, period=20, std_dev=3.0)
-    # 更大的标准差 → 突破更少（所有值更负）
+    # 更宽的带 → 价格更易落在带内 → 更多 0 → 均值绝对值更小
     v1 = r1.drop_nulls().mean()
     v2 = r2.drop_nulls().mean()
     assert v2 is not None and v1 is not None
-    assert v2 < v1  # 更宽的带 → 更难突破 → 更负
+    assert abs(v2) < abs(v1)
 
 
 # ── Volume ──────────────────────────────────────

@@ -9,8 +9,9 @@ feature/bollinger.py - 布林带因子
     std_dev: float = 2.0  标准差倍数
 
 返回:
-    价格相对于上轨的突破百分比
-    正值 = 突破上轨，负值 = 跌破下轨
+    布林带突破百分比
+    正值 = 突破上轨（%），负值 = 跌破下轨（%），0 = 在带内
+    值域约 [-5%, +5%]，超出域外代表极端行情
 
 所需数据列:
     close
@@ -39,8 +40,23 @@ def calculate(df: pl.DataFrame, **params) -> pl.Series:
     period = int(params.get("period", 20))
     std_dev = float(params.get("std_dev", 2.0))
 
-    mid = df["close"].rolling_mean(window_size=period, min_samples=period)
-    std = df["close"].rolling_std(window_size=period, min_samples=period)
+    mid = pl.col("close").rolling_mean(window_size=period, min_samples=period)
+    std = pl.col("close").rolling_std(window_size=period, min_samples=period)
     upper = mid + std_dev * std
+    lower = mid - std_dev * std
 
-    return (df["close"] - upper) / upper * 100
+    upper_pct = (pl.col("close") - upper) / upper * 100
+    lower_pct = (pl.col("close") - lower) / lower * 100
+
+    # 突破上轨 → 正值；跌破下轨 → 负值；区间内 → 0
+    result = (
+        pl.when(pl.col("close") > upper)
+        .then(upper_pct)
+        .otherwise(
+            pl.when(pl.col("close") < lower)
+            .then(lower_pct)
+            .otherwise(pl.lit(0.0))
+        )
+    )
+
+    return df.select(result.alias("result"))["result"]
