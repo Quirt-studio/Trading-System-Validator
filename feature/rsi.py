@@ -30,14 +30,25 @@ def calculate(df: pl.DataFrame, **params) -> pl.Series:
     """
     period = int(params.get("period", 14))
 
-    delta = df["close"].diff()
+    delta = pl.col("close").diff()
     gain = delta.clip(lower_bound=0)
     loss = (-delta).clip(lower_bound=0)
 
     avg_gain = gain.rolling_mean(window_size=period, min_samples=period)
     avg_loss = loss.rolling_mean(window_size=period, min_samples=period)
 
-    rs = avg_gain / avg_loss.replace(0, None)
-    rsi = 100.0 - (100.0 / (1.0 + rs))
+    # RSI = 100 - 100/(1+RS), RS = avg_gain / avg_loss
+    # avg_loss == 0 时的边界处理:
+    #   avg_gain > 0 (纯上涨): RS→∞, RSI→100
+    #   avg_gain == 0 (横盘):   无方向, RSI=50
+    rsi_expr = (
+        pl.when(avg_loss == 0)
+        .then(
+            pl.when(avg_gain == 0)
+            .then(pl.lit(50.0))
+            .otherwise(pl.lit(100.0))
+        )
+        .otherwise(100.0 - (100.0 / (1.0 + (avg_gain / avg_loss.replace(0, None)))))
+    )
 
-    return rsi
+    return df.select(rsi_expr.alias("rsi"))["rsi"]
